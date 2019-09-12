@@ -24,7 +24,7 @@ Finally, a metric is needed to validate the clustering method. According to the 
 
 One final step is that once all the feature vectors are clustered into different sets, each of those sets would have a random label from 0 to 58 (which is the number of classes in the TSRD dataset). The problem now was to assign the correct label - or at least, an approximation - of the category label. To do this, the Hungarian algorithm (or Munkres algorithm) comes handy. This algorithm aims to maximize the cost of a given matrix. In this case, a cost matrix was created by defining a 58x58 matrix, where each entry for the y-axis corresponded to the true label of each image, and the x-axis to the predicted cluster's label. The Munkres algorithm creates a map that assigns the cluster with the maximum number of instances to the true label. This process can be leaky as it is not granted that the maximum number of instances for a cluster maps to the correct label. However, it is an approximate way to map each of the classes to a category. Furthermore, it allows us to explore which samples were clustered correctly together or not, and to extract the confusion matrix.
 
-##Results
+## Results
 All of the networks explained above were tested using all of the images in the dataset, containing both training and testing sets, a total number of images of 6164. Each of the architectures was tested using the following pipeline:
 
 * Images were resized to the corresponding input size of each network and added a fourth dimension. For example, the tensor input for the NASNetLarge is [1, 331, 331, 3].
