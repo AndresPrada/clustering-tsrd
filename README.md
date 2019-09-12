@@ -1,7 +1,6 @@
 # Technical Task Motor AI
 
-### Author: 
-**Andrés Prada**
+#### Author: Andrés Prada
 
 ## Description: 
 This notebook presents the solution for the technical task proposed for the selection process in Motor AI. This task requires to compress the images in the dataset TRDS through an existing pre-trained model and extract the feature vector at a certain layer. These feature vectors need to be clustered afterward using a clustering algorithm. Finally, the performance of the model needs to be evaluated using the proper metrics.
@@ -21,7 +20,7 @@ The second part of this task consists of the clustering of all of these vectors 
 
 Finally, a metric is needed to validate the clustering method. According to the research, the most common metric to validate unsupervised learning is the evaluation of similarity with Normalized Mutual Information (NMI). This metric is computed as is shown in the image below. It takes as input the true labels and the predicted labels obtained for each cluster.
 
-![](https://github.com/AndresPrada/clustering-tsrd/blob/master/nmi.png) This was found in https://course.ccs.neu.edu/cs6140sp15/7_locality_cluster/Assignment-6/NMI.pdf
+![](https://github.com/AndresPrada/clustering-tsrd/blob/master/nmi.png | width = 100) This was found in https://course.ccs.neu.edu/cs6140sp15/7_locality_cluster/Assignment-6/NMI.pdf
 
 One final step is that once all the feature vectors are clustered into different sets, each of those sets would have a random label from 0 to 58 (which is the number of classes in the TSRD dataset). The problem now was to assign the correct label - or at least, an approximation - of the category label. To do this, the Hungarian algorithm (or Munkres algorithm) comes handy. This algorithm aims to maximize the cost of a given matrix. In this case, a cost matrix was created by defining a 58x58 matrix, where each entry for the y-axis corresponded to the true label of each image, and the x-axis to the predicted cluster's label. The Munkres algorithm creates a map that assigns the cluster with the maximum number of instances to the true label. This process can be leaky as it is not granted that the maximum number of instances for a cluster maps to the correct label. However, it is an approximate way to map each of the classes to a category. Furthermore, it allows us to explore which samples were clustered correctly together or not, and to extract the confusion matrix.
 
