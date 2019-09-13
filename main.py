@@ -10,8 +10,10 @@ from cifar100vgg import cifar100vgg
 from keras.applications.resnet import ResNet152
 from keras.applications.inception_resnet_v2 import InceptionResNetV2
 from keras.applications.nasnet import NASNetLarge
+from keras.applications.vgg16 import VGG16
 from keras.applications.xception import Xception
 from sklearn.cluster import KMeans
+from sklearn import manifold
 from sklearn.metrics import confusion_matrix, accuracy_score, adjusted_rand_score, normalized_mutual_info_score
 from munkres import Munkres
 import matplotlib.pyplot as plt
@@ -43,12 +45,20 @@ def clusters_mapping(matrix):
 	# Return mapping to maximize the cost
 	return m.compute(cost_matrix)
 
+def visualize_data(Z, labels, num_clusters):
+    tsne = manifold.TSNE(n_components=2, init='pca', random_state=0)
+    Z_tsne = tsne.fit_transform(Z)
+    fig = plt.figure()
+    plt.scatter(Z_tsne[:, 0], Z_tsne[:, 1], s=2, c=labels, cmap=plt.cm.get_cmap("jet", num_clusters))
+    plt.colorbar(ticks=range(num_clusters))
+    plt.show()
+
 def plot_confusion_matrix(cm, classes):
 	"""
 	This function plots the confusion matrix.
 	This function was edited from the original found in: https://scikit-learn.org/stable/auto_examples/model_selection/plot_confusion_matrix.html
 	"""
-	cm = cm.astype('float') / (cm.sum(axis=1)[:, np.newaxis] + 0.00001)
+	#cm = cm.astype('float') / (cm.sum(axis=1)[:, np.newaxis] + 0.00001)
 	fig, ax = plt.subplots()
 	im = ax.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
 	ax.figure.colorbar(im, ax=ax)
@@ -69,7 +79,7 @@ def plot_confusion_matrix(cm, classes):
 	for i in range(cm.shape[0]):
 		for j in range(cm.shape[1]):
 			if cm[i,j] > 0.1:
-				ax.text(j, i, format(cm[i, j]*100, '.0f'), ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
+				ax.text(j, i, format(cm[i, j]*100, '.0f'), fontsize=12, ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
 	fig.tight_layout()
 	plt.show()
 	return ax
@@ -85,16 +95,17 @@ if __name__ == '__main__':
 	labels = [int(str(p).split("/")[1].split("_")[0][-2:]) for p in image_paths]
 
 	# Define the model
-	#model = ResNet152(include_top=False, weights='imagenet', pooling='avg')
-	#model = Xception(include_top=True, weights='imagenet', pooling='avg')
-	model = NASNetLarge(include_top=False, weights='imagenet', pooling='avg')
+	model = ResNet152(include_top=False, weights='imagenet', pooling='avg')
+	#model = Xception(include_top=False, weights='imagenet', pooling='avg')
+	#model = NASNetLarge(include_top=False, weights='imagenet', pooling='avg')
 	#model = InceptionResNetV2(include_top=False, weights='imagenet', pooling='avg')
+	#model = VGG16(include_top=False, weights='imagenet', pooling='avg')
 	#model = cifar100vgg(train=False)
 	#my_layer = model.model.layers[56]
 	#model = Model(model.model.input, outputs=my_layer.output)
 	model.layers[0].trainable = False
-	dims = [331,331]
-	vect_len = 4032
+	dims = [224,224]
+	vect_len = 2048
 
 	# Define list to store vector values
 	feature_vects = []
@@ -114,6 +125,8 @@ if __name__ == '__main__':
 		# Predict and store value
 		#feature_vects.append(model.predict(img).flatten())
 		feature_vects_np[idx, :] = model.predict(img).flatten()
+
+	np.save('feats.npy', feature_vects_np)
 
 	# Cluster the vectors
 	clusters = KMeans(n_clusters=58).fit(feature_vects_np)

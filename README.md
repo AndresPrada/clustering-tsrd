@@ -14,6 +14,8 @@ This task can be divided into two smaller tasks, that each of them is independen
 
 *  A third alternative to this first task was found when the pre-trained model in `https://github.com/geifmany/cifar-vgg` with the weights in the CIFAR100 dataset was found. This was trained on the VGG16 model. This pre-trained model had the advantage that the images taken as input were resized to 32x32, which are closer to the 96x96 size that the images in TSRD have. 
 
+*  Finally, ResNet152 is worth a try since this network has proved a great ability to generalize in many different applications. This network takes as input 224x224 images, and it was pre-trained on the ImageNet dataset.
+
 To this point, four different architectures were selected to model this problem. The goal would be to build the whole pipeline and stick with the model that could perform the best. The layer on which the feature vectors would depend on the architecture. For the VGG16, they would be extracted after the last batch normalization, before the last Dense layer that performs the classification itself.  In the rest of the networks, those vectors would be extracted after the last convolutional layer, where a global average is applied. The size of these vectors will be of 512 for the VGG16 model, 1536 for the InceptionResNetV2, 2048 for the Xception and 4032 for the NASNetLarge. The feature vectors are extracted in this position due to its compression size of the features. This is where the feature vectors are better represented, just before the classification step.
 
 The second part of this task consists of the clustering of all of these vectors and evaluate, with the appropriate metric, the chosen model. The most famous and used technique that could be used straight forward for this problem is the KMeans algorithm. This algorithm assigns each of the features vectors to a cluster in which each feature vector belongs to the cluster with the nearest mean, serving as a model of the cluster. Also, Agglomerative Clustering could provide efficient performance for the task.
@@ -34,12 +36,28 @@ All of the networks explained above were tested using only the images in the tra
 
 Finally, for the network that achieved the highest NMI, the last step was to compute the confusion matrix through the Menkres algorithm. The results for the different networks were the following:
 
-|  Model | Weights | Time(s) | NMI |
-|---|---|---|---|
-| VGG16 | CIFAR100 | 59.06 | 0.4630 |
-| InceptionResNetV2 |  ImageNet | 1217.40 | 0.3082 |
-|  NASNetLarge | ImageNet |   |
-|  Xception | ImageNet |   |
+|  Model | Weights | Image input size | Time(s) | NMI |
+|---|---|---|---|---|
+| VGG16 | CIFAR100 | 32x32 | 59.06 | 0.4630 |
+| InceptionResNetV2 | ImageNet | 299x299 | 1217.40 | 0.3082 |
+|  NASNetLarge | ImageNet | 331x331 | 6221.83 | 0.3850 |
+|  Xception | ImageNet | 299x299 | 1310.48 | 0.3913 |
+|  ResNet152 | ImageNet | 224x224 | 1562.28 | 0.6308 |
+
+The conclussions that can be extracted from these results are the following. First of all, the highest Normalized Mutual Information score was obtained by the ResNet152. Comparing this network to rest of them on the ImageNet benchmark, it obtained notably worse accuracy. This meant that the weights on which the network was previously trained, have a deterministic influence with this problem. However, in order to proove that the weights were deterministic in this problem, it was tested on the pre-trained model with the ImageNet weights.
+
+| Model | Weights | Image input size | Time(s) | NMI |
+|---|---|---|---|---|
+| VGG16 | ImageNet | 299x299 | 947.70 | 0.6198 |
+
+Another conclussion that could be extracted from the comparison of those networks is that, although those network could achieve high accuracy on the ImageNet dataset, they are not able to generate feature vectors properly for this problem. Leaving aside the rest of the networks but ResNet152, some conclussions can be extracted from theese clusters. However, before moving on to the analysis of the clusters, Agglomerative Clustering was used to compare both clustering algorithms.
+
+| Model | Clustering method | NMI |
+|---|---|---|
+| ResNet152 | KMeans |0.6308 | 
+| ResNet152 | Agglomerative Clustering | 0.6411 |
+
+Since the highest NMI was obtained using ResNet152 and Agglomerative Clustering, this pipeline was used to analyze the results.
 
 
 Since the model that performed the best was the *****, it will be used to analyze the performance of the clustering. To do this, a confusion matrix will be created as explained above. This confusion matrix can be seen in the figure below. For visualization purposes, the normalized float numbers have been multiplied by 100 and remove the decimals.
@@ -50,6 +68,8 @@ Although given the number of classes it is difficult to properly observe each of
 
 
 On the other hand, for classes 
+
+Analyze if the clusters correspond to the actual classes of the dataset. Based on how the results turn out. Describe the reasons for success or failure.
 
 
 
