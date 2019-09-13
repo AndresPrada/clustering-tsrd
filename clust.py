@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os, glob, cv2, sys, pdb, time
 from pathlib import Path
 import numpy as np
+from sklearn.utils.multiclass import unique_labels
 from munkres import Munkres
 
 def visualize_data(Z, labels, num_clusters):
@@ -52,46 +53,48 @@ def clusters_mapping(matrix):
 	return m.compute(cost_matrix)
 
 def plot_confusion_matrix(y_true, y_pred, classes, normalize=False, title=None, cmap=plt.cm.Blues):
-    """
-        This function prints and plots the confusion matrix.
-        Normalization can be applied by setting `normalize=True`.
-        """
-    if not title:
-        if normalize:
-            title = 'Normalized confusion matrix'
-        else:
-            title = 'Confusion matrix, without normalization'
-    # Compute confusion matrix
-    cm = confusion_matrix(y_true, y_pred)
+	"""
+	    This function prints and plots the confusion matrix.
+	    Normalization can be applied by setting `normalize=True`.
+	    """
+	if not title:
+	    if normalize:
+	        title = 'Normalized confusion matrix'
+	    else:
+	        title = 'Confusion matrix, without normalization'
+	# Compute confusion matrix
+	cm = confusion_matrix(y_true, y_pred)
 
-    # Only use the labels that appear in the data
-    classes = classes[unique_labels(y_true, y_pred)]
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
-        
-    print(cm)
-    
-    fig, ax = plt.subplots()
-    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
-    ax.figure.colorbar(im, ax=ax)
-    # We want to show all ticks...
-    ax.set(xticks=np.arange(cm.shape[1]), yticks=np.arange(cm.shape[0]), xticklabels=classes, yticklabels=classes, title=title, ylabel='True label', xlabel='Predicted label')
-        
-    # Rotate the tick labels and set their alignment.
-    plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
-   
-    # Loop over data dimensions and create text annotations.
-    fmt = '.0f' if normalize else 'd'
-    thresh = cm.max() / 2.
-    for i in range(cm.shape[0]):
-       for j in range(cm.shape[1]):
-           if cm[i,j] > 0.1:
-            ax.text(j, i, format(cm[i, j]*100, fmt), ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
-    fig.tight_layout()
-    return ax
+	# Only use the labels that appear in the data
+	classes = classes[unique_labels(y_true, y_pred)]
+	if normalize:
+	    cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+	    print("Normalized confusion matrix")
+	else:
+	    print('Confusion matrix, without normalization')
+	    
+	print(cm)
+
+	fig, ax = plt.subplots()
+	im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+	ax.figure.colorbar(im, ax=ax)
+	# We want to show all ticks...
+	ax.set(xticks=np.arange(cm.shape[1]), yticks=np.arange(cm.shape[0]), xticklabels=classes, yticklabels=classes, title=title, ylabel='True label', xlabel='Cluster label')
+	    
+	# Rotate the tick labels and set their alignment.
+	plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+
+	# Loop over data dimensions and create text annotations.
+	fmt = '.0f' if normalize else 'd'
+	thresh = cm.max() / 2.
+	for i in range(cm.shape[0]):
+		for j in range(cm.shape[1]):
+			if cm[i,j] > 0.01:
+				ax.text(j, i, format(cm[i, j]*100, fmt), fontsize=8, ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
+	fig.tight_layout()
+	plt.rc('font', size=8)
+	plt.show()
+	return ax
 
 if __name__ == '__main__':
 	image_path = "tsrd-train/"
@@ -128,5 +131,17 @@ if __name__ == '__main__':
 		for map_ in mapping:
 			if map_[0] == label:
 				corrected_labels[idx] = map_[1]
-
-	plot_confusion_matrix(labels, corrected_labels, labels, title='Confussion Matrix')
+	# labels_sort = labels.copy()
+	# labels_sort.sort()
+	# labels_names = np.unique(labels_sort)
+	# final_labels = []
+	# for i in clusters_ag.labels_:
+	# 	final_labels.append(corrected_labels[i])
+    
+	# corresp_labels = corrected_labels.tolist()
+	# corresp_labels.sort()
+    
+    #conf_mat = confusion_matrix2(final_labels, labels)
+    # Plot normalized confusion matrix
+	#plot_confusion_matrix(labels, final_labels, classes=np.asarray(corresp_labels), normalize=True, title='Normalized confusion matrix')
+	plot_confusion_matrix(labels, clusters_ag.labels_, np.unique(labels), normalize=True, title='Labeled images')
