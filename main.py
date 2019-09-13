@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
 	start_time = time.time()
 	# Open images folder
-	image_path = "TSRD/"
+	image_path = "tsrd-train/"
 	image_paths = [str(p)for p in Path(image_path).glob('*.png')]
 
 	# Extracct labels from image name
@@ -94,9 +94,11 @@ if __name__ == '__main__':
 	#model = Model(model.model.input, outputs=my_layer.output)
 	model.layers[0].trainable = False
 	dims = [331,331]
+	vect_len = 4032
 
 	# Define list to store vector values
 	feature_vects = []
+	feature_vects_np = np.zeros((len(image_paths), vect_len), dtype=float)
 
 	# Extract vectors
 	for idx, img in enumerate(image_paths):
@@ -110,10 +112,11 @@ if __name__ == '__main__':
 		img = np.expand_dims(img.copy(), axis=0)
 
 		# Predict and store value
-		feature_vects.append(model.predict(img).flatten())
+		#feature_vects.append(model.predict(img).flatten())
+		feature_vects_np[idx, :] = model.predict(img).flatten()
 
 	# Cluster the vectors
-	clusters = KMeans(n_clusters=58).fit(feature_vects)
+	clusters = KMeans(n_clusters=58).fit(feature_vects_np)
 
 	#Evaluate similarity normalized_mutual_info_score
 	nmi = normalized_mutual_info_score(labels, clusters.labels_, average_method='warn')
