@@ -6,7 +6,7 @@
 This notebook presents the solution for the technical task proposed for the selection process in Motor AI. This task requires to compress the images in the dataset TRDS through an existing pre-trained model and extract the feature vector at a certain layer. These feature vectors need to be clustered afterward using a clustering algorithm. Finally, the performance of the model needs to be evaluated using the proper metrics.
 
 ## Organization of the code
-The main program is located in `main.py`, and `cifar100vgg.py` contains the VGG16 pre-trained on the CIFAR100 dataset. In order to test this program, the images should be included in the same directory under the folder `TSRD-Test`.
+The main program is located in `main.py`. `cifar100vgg.py` only contains the VGG16 pre-trained on the CIFAR100 dataset. In order to test this program, the images should be included in the same directory under the folder `TSRD-Test`.
 
 ## Methodology
 This task can be divided into two smaller tasks, that each of them is independent of the other one. The first task would consist of choosing a pre-trained model that could perform fine with the dataset given. Also, it is important to wisely choose the layer on which the feature vectors are extracted would be. The second task is related to the clustering technique that could be used to cluster those feature vectors, and the metrics that could show how well the model performs. For the first task, the selection of an efficient model has its limitations:
