@@ -6,21 +6,26 @@
 # This is the script for the technical task for the process in Motor AI.
 # Author: Andrés Prada
 
-import os, glob, cv2, sys, time
+import os, glob, cv2, time
 from pathlib import Path
 import numpy as np
-from keras import Model
-from cifar100vgg import cifar100vgg
 from keras.applications.resnet import ResNet152
-from keras.applications.inception_resnet_v2 import InceptionResNetV2
-from keras.applications.nasnet import NASNetLarge
-from keras.applications.vgg16 import VGG16
-from keras.applications.xception import Xception
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.utils.multiclass import unique_labels
 from sklearn import manifold
 from sklearn.metrics import confusion_matrix, normalized_mutual_info_score
 import matplotlib.pyplot as plt
+
+# Importts from other models:
+#
+# from keras import Model
+# from cifar100vgg import cifar100vgg
+# from keras.applications.inception_resnet_v2 import InceptionResNetV2
+# from keras.applications.nasnet import NASNetLarge
+# from keras.applications.vgg16 import VGG16
+# from keras.applications.xception import Xception
+#
+
 
 def visualize_data(Z, labels, num_clusters):
 	'''
@@ -83,10 +88,11 @@ if __name__ == '__main__':
 	#model = VGG16(include_top=False, weights='imagenet', pooling='avg')
 	#model = cifar100vgg(train=False)
 	#my_layer = model.model.layers[56]
-
 	#model = Model(model.model.input, outputs=my_layer.output)
+
 	# Define the model
 	model = ResNet152(include_top=False, weights='imagenet', pooling='avg')
+	n_clusters = 58
 	model.layers[0].trainable = False
 	dims = [224,224]
 	vect_len = 2048
@@ -109,7 +115,7 @@ if __name__ == '__main__':
 		feature_vects[idx, :] = model.predict(img).flatten()
 
 	# Cluster the vectors
-	clusters = AgglomerativeClustering(n_clusters=58).fit(feature_vects)
+	clusters = AgglomerativeClustering(n_clusters=n_clusters).fit(feature_vects)
 
 	# Check running time
 	print("--- %s seconds ---" % (time.time() - start_time))
@@ -122,7 +128,7 @@ if __name__ == '__main__':
 	plot_matrix(labels, clusters.labels_, np.unique(labels), title='Labeled images')
 
 	# Finally, visualize data
-	visualize_data(feature_vects, labels, 58)
+	visualize_data(feature_vects, labels, n_clusters)
 
 
 
