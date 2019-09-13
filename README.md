@@ -22,7 +22,7 @@ The second part of this task consists of the clustering of all of these vectors 
 
 Finally, a metric is needed to validate the clustering method. According to the research, the most common metric to validate unsupervised learning is the evaluation of similarity with Normalized Mutual Information (NMI). This metric is computed as is shown in the image below. It takes as input the true labels and the predicted labels obtained for each cluster.
 
-![](https://github.com/AndresPrada/clustering-tsrd/blob/master/nmi.png?v=4&s=50) Where Y are the class labels, C the cluster labels, H(.) is the entropy and I(Y;C) the mutual information between Y and C. This was found in https://course.ccs.neu.edu/cs6140sp15/7_locality_cluster/Assignment-6/NMI.pdf
+![](https://github.com/AndresPrada/clustering-tsrd/blob/master/images/nmi.png?v=4&s=50) Where Y are the class labels, C the cluster labels, H(.) is the entropy and I(Y;C) the mutual information between Y and C. This was found in https://course.ccs.neu.edu/cs6140sp15/7_locality_cluster/Assignment-6/NMI.pdf
 
 ## Results
 All of the networks explained above were tested using only the images in the training set, containing a total of 4170 images samples. Each of the architectures was tested using the following pipeline:
@@ -53,7 +53,7 @@ Another conclusion that could be extracted from the comparison of those networks
 
 Since the highest NMI was obtained using ResNet152 and Agglomerative Clustering, this pipeline was used to analyze the results. To do this, a matrix with *true label - cluster* images was be created as explained above. This confusion matrix can be seen in the figure below. In the y-axis are the true label of the images, and in the x-axis the number of images of that true class were assigned to that cluster.
 
-![alt text](https://github.com/AndresPrada/clustering-tsrd/blob/master/matrix.png)
+![alt text](https://github.com/AndresPrada/clustering-tsrd/blob/master/images/matrix.png)
 
 Although given the number of classes is difficult to properly observe each of the classes, some of them show very clear results. For example, all of the 6 images that correspond to the category 57, have been clustered together. Also, images from labels 26 and 11 have been clustered among those. More examples of this can be found in the table above.
 
@@ -63,7 +63,7 @@ On the other hand, this model is not able to differentiate properly the clusters
 
 Finally, for visualization purposes, the features vectors extracted are shown using dimensionality reduction TSNE.
 
-![](https://github.com/AndresPrada/clustering-tsrd/blob/master/clustering_features_tsne.png)
+![](https://github.com/AndresPrada/clustering-tsrd/blob/master/images/clustering_features_tsne.png)
 
 
 
