@@ -82,17 +82,17 @@ def plot_confusion_matrix(y_true, y_pred, classes, normalize=False, title=None, 
 	ax.set(xticks=np.arange(cm.shape[1]), yticks=np.arange(cm.shape[0]), xticklabels=classes, yticklabels=classes, title=title, ylabel='True label', xlabel='Cluster label')
 	    
 	# Rotate the tick labels and set their alignment.
-	plt.setp(ax.get_xticklabels(), rotation=45, ha="right", rotation_mode="anchor")
+	plt.setp(ax.get_xticklabels(), fontsize=6, rotation=45, ha="right", rotation_mode="anchor")
+	plt.setp(ax.get_yticklabels(), fontsize=6)
 
 	# Loop over data dimensions and create text annotations.
-	fmt = '.0f' if normalize else 'd'
+	#fmt = '.0f' if normalize else 'd'
 	thresh = cm.max() / 2.
 	for i in range(cm.shape[0]):
 		for j in range(cm.shape[1]):
-			if cm[i,j] > 0.01:
-				ax.text(j, i, format(cm[i, j]*100, fmt), fontsize=8, ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
+			if cm[i,j] > 0:
+				ax.text(j, i, cm[i, j], fontsize=6, ha="center", va="center", color="white" if cm[i, j] > thresh else "black")
 	fig.tight_layout()
-	plt.rc('font', size=8)
 	plt.show()
 	return ax
 
@@ -144,4 +144,4 @@ if __name__ == '__main__':
     #conf_mat = confusion_matrix2(final_labels, labels)
     # Plot normalized confusion matrix
 	#plot_confusion_matrix(labels, final_labels, classes=np.asarray(corresp_labels), normalize=True, title='Normalized confusion matrix')
-	plot_confusion_matrix(labels, clusters_ag.labels_, np.unique(labels), normalize=True, title='Labeled images')
+	plot_confusion_matrix(labels, clusters_ag.labels_, np.unique(labels), normalize=False, title='Labeled images')
