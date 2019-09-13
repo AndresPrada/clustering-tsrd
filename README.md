@@ -42,7 +42,7 @@ Finally, for the network that achieved the highest NMI, the Agglomerative Cluste
 |  Xception | ImageNet | 299x299 | 1310.48 | 0.3913 |
 |  ResNet152 | ImageNet | 224x224 | 1562.28 | 0.6308 |
 
-The conclussions that can be extracted from these results are the following: First of all, the highest Normalized Mutual Information score was obtained by the ResNet152. Comparing this network to rest of them on the ImageNet benchmark, it obtained notably worse accuracy.
+The conclussions that can be extracted from these results are the following: First of all, the highest Normalized Mutual Information score was obtained by the ResNet152. Comparing this network to rest of them on the ImageNet benchmark, it obtained notably worse accuracy. However, the time to extract teh feature vectors for each of those models is very elevated.
 
 Another conclusion that could be extracted from the comparison of those networks is that, although those networks could achieve high accuracy on the ImageNet dataset, they are not able to generate clear clusterable feature vectors for this problem. Leaving aside the rest of the networks but ResNet152, some conclusions can be extracted from these clusters. However, before moving on to the analysis of the clusters, Agglomerative Clustering was used to compare both clustering algorithms.
 
@@ -59,7 +59,7 @@ Although given the number of classes is difficult to properly observe each of th
 
 As it is possible to observe in the table above, some very big clusters gathered images from many categories, for example, cluster 3 and cluster 9. Most of the images that are clutered together have some visual similarities. For example, in cluster 9, there are images from labels from 40 until 51 (but 48). All of those images are visually alike. All of them are represented as a triangle in white - black colors. Also, images from labels from 0 to 7, are clustered together. All of those images are numerically and rounded traffic signs.
 
-On the other hand, this model is not able to differentiate properly the clusters. Many equally labeled images are divided into two or more clusters. For example, in label 28, it is possible to observe that its images are clusterd more or less homogeneous along 6 clusters. This denotes a poor performance of the model.
+On the other hand, this model is not able to differentiate properly the clusters. Many equally labeled images are divided into two or more clusters. For example, in label 28, it is possible to observe that its images are clustered more or less homogeneous along 6 clusters. This denotes a poor performance of the model.
 
 Finally, for visualization purposes, the features vectors extracted are shown using dimensionality reduction TSNE.
 
