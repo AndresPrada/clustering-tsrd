@@ -1,4 +1,4 @@
-# Technical Task Motor AI
+# README
 
 #### Author: Andrés Prada
 
